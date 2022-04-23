@@ -1,0 +1,13 @@
+local old = nil
+
+old = hookmetamethod(game,"__namecall",function(self,...) -- Hooks the metamethod namecall (fires when anything with : gets called)
+    local args = {...} -- Gets the arguments of the remote
+    local method = getnamecallmethod() -- Returns the method invoked (FireServer, Destroy, etc.)
+    if method == "FireServer" and tostring(self) == "ServerEvent" and typeof(args[2]) == "number" then -- Checks the remote to make sure it's the shoot remote
+        if args[2] then
+            args[2] = 1
+        end
+        return self.FireServer(self,unpack(args))
+    end
+    return old(self,...) -- Returns the arguments
+end)
